@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>多采的文化饗宴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf5e6;
+  --card:#fffdf8;
+  --ink:#3d2415;
+  --mute:#856a54;
+  --red:#c41e18;
+  --red-dark:#99130e;
+  --gold:#d99b38;
+  --line:#e3cfa8;
+  --c0:#c41e18; /* 春節紅 */
+  --c1:#527a32; /* 端午青 */
+  --c2:#24698a; /* 聖誕藍 */
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background-color:var(--bg);
+  /* 傳統祥雲幾何底紋 */
+  background-image:
+    radial-gradient(circle at 24px 24px, transparent 15px, rgba(217,155,56,.13) 16px, rgba(217,155,56,.13) 18px, transparent 19px),
+    radial-gradient(circle at 0px 0px, transparent 15px, rgba(217,155,56,.13) 16px, rgba(217,155,56,.13) 18px, transparent 19px);
+  background-size:48px 48px;
+  color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  min-height:100vh;
+}
+
+/* 傳統中式紅框與四角回紋裝飾 */
+.frame-wrap{
+  position:relative;
+  min-height:calc(100vh - 20px);
+  margin:10px;
+  border:4px solid var(--red);
+  padding:16px 20px;
+  background:rgba(255,253,248,.45);
+}
+.corner{
+  position:fixed;
+  width:72px;
+  height:72px;
+  pointer-events:none;
+  z-index:20;
+  color:var(--red);
+}
+.corner.tl{top:10px;left:10px}
+.corner.tr{top:10px;right:10px;transform:scaleX(-1)}
+.corner.bl{bottom:10px;left:10px;transform:scaleY(-1)}
+.corner.br{bottom:10px;right:10px;transform:scale(-1,-1)}
+
+#app{max-width:1440px;margin:0 auto;position:relative;z-index:2}
+h1,h2,h3{margin:0}
+.serif{font-family:"Noto Serif TC","DFKai-SB","標楷體",serif;font-weight:900}
+
+/* 頂部導覽列 */
+.bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+  padding:10px 16px;
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(133,106,84,.08);
+}
+.title{font-size:1.65rem;color:var(--red);letter-spacing:1px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+button{
+  font:inherit;
+  border:2px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  border-radius:12px;
+  padding:8px 15px;
+  cursor:pointer;
+  font-weight:700;
+  transition:transform .1s, box-shadow .15s, background .15s;
+}
+button:hover{border-color:var(--gold);transform:translateY(-1px)}
+button:active{transform:translateY(1px)}
+button.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 8px rgba(196,30,24,.25)}
+button.big{font-size:1.45rem;padding:16px 32px;border-radius:16px}
+button.danger{border-color:var(--red);color:var(--red);background:#fff5f5}
+button.home-btn{background:#fff8eb;border-color:var(--gold);color:#7a4b12}
+
+/* 首頁祥雲主視覺 */
+.land{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:calc(100vh - 64px);
+  text-align:center;
+  padding:20px;
+}
+.cloud-banner{
+  position:relative;
+  background:var(--card);
+  border:3px solid var(--line);
+  border-radius:999px;
+  padding:48px 76px;
+  margin-bottom:32px;
+  box-shadow:
+    0 12px 32px rgba(196,30,24,.08),
+    0 0 0 8px rgba(255,253,248,.75);
+}
+.cloud-banner::before,
+.cloud-banner::after{
+  content:"";
+  position:absolute;
+  background:var(--card);
+  border:3px solid var(--line);
+  border-radius:50%;
+  z-index:-1;
+}
+.cloud-banner::before{width:140px;height:140px;top:-28px;left:18%}
+.cloud-banner::after{width:160px;height:160px;top:-34px;right:18%}
+.cloud-banner h1{
+  font-size:clamp(2.2rem, 5vw, 3.6rem);
+  color:var(--red);
+  letter-spacing:4px;
+  text-shadow:1px 2px 0 rgba(217,155,56,.25);
+}
+
+/* 密碼彈窗 */
+.modal-mask{
+  position:fixed;
+  inset:0;
+  background:rgba(45,25,12,.55);
+  backdrop-filter:blur(3px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:16px;
+}
+.modal-box{
+  background:var(--card);
+  border:3px solid var(--red);
+  border-radius:20px;
+  padding:26px 28px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+  box-shadow:0 16px 40px rgba(0,0,0,.22);
+}
+.modal-box h2{color:var(--red);margin-bottom:8px;font-size:1.5rem}
+.modal-box input{
+  text-align:center;
+  font-size:1.6rem;
+  letter-spacing:6px;
+  font-weight:800;
+  margin:14px 0 8px;
+  border:2px solid var(--gold);
+}
+
+/* 電子白板與卡片佈局 */
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.col{
+  background:var(--card);
+  border:3px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  min-height:62vh;
+  box-shadow:0 4px 14px rgba(133,106,84,.06);
+}
+.col.live{border-color:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.col h2{color:var(--c);font-size:2rem;text-align:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px dashed var(--line)}
+.chips,.zone{display:flex;flex-wrap:wrap;gap:9px;align-content:flex-start}
+.chip{
+  background:var(--c,var(--red));
+  color:#fff;
+  border-radius:12px;
+  padding:7px 14px;
+  font-size:1.25rem;
+  font-weight:700;
+  display:inline-flex;
+  gap:6px;
+  align-items:center;
+  box-shadow:0 2px 5px rgba(0,0,0,.12);
+}
+.chip small{font-size:.75rem;opacity:.9;background:rgba(255,255,255,.22);padding:1px 6px;border-radius:6px}
+.chip b{cursor:pointer;opacity:.9;margin-left:2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:3px solid var(--c);border-radius:18px;padding:14px}
+.card h3{margin:0 0 10px;color:var(--c);font-size:1.3rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sub{border:2px dashed var(--line);border-radius:12px;padding:10px;min-height:105px;background:#fffcf5}
+.sub h4{margin:0 0 8px;font-size:1.05rem;color:var(--ink)}
+.cloud{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;align-items:center;padding:14px;min-height:52vh}
+.cloud span{font-weight:900;line-height:1.15;color:var(--c)}
+.hint{color:var(--mute);font-weight:600}
+
+/* 學生平板區 */
+.stu-panel{
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 4px 16px rgba(133,106,84,.07);
+}
+.stu .zone{min-height:92px;border:3px dashed var(--line);border-radius:16px;padding:12px;background:#fffcf5}
+.stu .zone.over{border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,var(--card))}
+.stu .chip{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;font-size:1.35rem;padding:8px 16px}
+.chip.sel{outline:4px solid var(--gold);transform:scale(1.04)}
+.ghost{position:fixed;pointer-events:none;z-index:99;opacity:.92;transform:translate(-50%,-50%)}
+input[type=text],input[type=password]{
+  font:inherit;
+  font-size:1.25rem;
+  padding:11px 14px;
+  border:2px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  color:var(--ink);
+  width:100%;
+}
+input:focus{outline:none;border-color:var(--red)}
+.row{display:flex;gap:10px}
+.namebox{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-weight:800;font-size:1.15rem}
+.namebox input{width:9em;padding:7px 10px;font-size:1.1rem}
+
+@media (max-width:820px){
+  .frame-wrap{margin:6px;padding:12px}
+  .corner{width:46px;height:46px}
+  .cloud-banner{padding:34px 32px;border-radius:36px}
+  .cloud-banner::before,.cloud-banner::after{display:none}
+  .cols,.grid{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- 四角傳統中式回紋邊框裝飾 -->
+<svg class="corner tl" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="square">
+  <path d="M2 2 H95 V24 H70 V12 H82 V36 H46 V12 H58 V24 H24 V58 H12 V46 H36 V82 H12 V70 H24 V95 H2 Z"/>
+</svg>
+<svg class="corner tr" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="square">
+  <path d="M2 2 H95 V24 H70 V12 H82 V36 H46 V12 H58 V24 H24 V58 H12 V46 H36 V82 H12 V70 H24 V95 H2 Z"/>
+</svg>
+<svg class="corner bl" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="square">
+  <path d="M2 2 H95 V24 H70 V12 H82 V36 H46 V12 H58 V24 H24 V58 H12 V46 H36 V82 H12 V70 H24 V95 H2 Z"/>
+</svg>
+<svg class="corner br" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="square">
+  <path d="M2 2 H95 V24 H70 V12 H82 V36 H46 V12 H58 V24 H24 V58 H12 V46 H36 V82 H12 V70 H24 V95 H2 Z"/>
+</svg>
+
+<div class="frame-wrap">
+  <div id="app"></div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+const FIREBASE_DB_URL = "https://culture-e2d79-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const TEACHER_PWD = "1124";
+
+const TOPICS=['春節','端午節','聖誕節'], GROUPS={A:0,B:0,C:1,D:1,E:2,F:2}, LETTERS=Object.keys(GROUPS);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let rtdb=null,useCloud=false,S={phase:1,topic:0},words=[],cats={},group=null,sel=null,dragging=false,msg='',myQ=0,goCat=false;
+let teacherAuth=false, showPwdModal=false, pwdErr='';
+
+try{
+  group=localStorage.getItem('cf_group');
+  teacherAuth=sessionStorage.getItem('cf_teacher_auth')==='1';
+}catch(e){}
+
+const route=()=>location.hash.replace('#','');
+const app=document.getElementById('app');
+
+try{
+  firebase.initializeApp({databaseURL: FIREBASE_DB_URL.replace(/\/$/,'')});
+  rtdb = firebase.database();
+  useCloud = true;
+}catch(e){console.error(e);}
+
+function saveLocal(){
+  try{
+    localStorage.setItem('cf_state',JSON.stringify(S));
+    localStorage.setItem('cf_words',JSON.stringify(words));
+    localStorage.setItem('cf_cats',JSON.stringify(cats));
+  }catch(e){}
+}
+function loadLocal(){
+  try{
+    const s=localStorage.getItem('cf_state'),w=localStorage.getItem('cf_words'),c=localStorage.getItem('cf_cats');
+    if(s)S=JSON.parse(s);if(w)words=JSON.parse(w);if(c)cats=JSON.parse(c);
+  }catch(e){}
+}
+
+/* 密碼驗證邏輯 */
+function openTeacher(){
+  if(teacherAuth){
+    location.hash='board';
+    render();
+  }else{
+    showPwdModal=true;
+    pwdErr='';
+    render();
+    setTimeout(()=>document.getElementById('pwdInput')?.focus(),50);
+  }
+}
+function checkPwd(){
+  const val=(document.getElementById('pwdInput')?.value||'').trim();
+  if(val===TEACHER_PWD){
+    teacherAuth=true;
+    showPwdModal=false;
+    pwdErr='';
+    try{sessionStorage.setItem('cf_teacher_auth','1')}catch(e){}
+    location.hash='board';
+    render();
+  }else{
+    pwdErr='密碼錯誤，請重新輸入！';
+    render();
+    setTimeout(()=>{
+      const el=document.getElementById('pwdInput');
+      if(el){el.value='';el.focus();}
+    },50);
+  }
+}
+function closePwd(){
+  showPwdModal=false;
+  pwdErr='';
+  if(route()==='board')location.hash='';
+  render();
+}
+
+function render(){
+  if(dragging)return;
+  const r=route();
+  if(r==='student'&&document.activeElement&&document.activeElement.tagName==='INPUT'&&S.phase===2)return;
+  if(r==='board'){
+    if(!teacherAuth){
+      showPwdModal=true;
+    }else{
+      return app.innerHTML=board();
+    }
+  }
+  if(r==='student')return app.innerHTML=student();
+
+  const modal=showPwdModal?`
+    <div class="modal-mask" onclick="if(event.target===this)closePwd()">
+      <div class="modal-box">
+        <h2 class="serif">🔐 老師端驗證</h2>
+        <p class="hint" style="margin:6px 0 0">請輸入管理密碼進入電子白板</p>
+        <input type="password" id="pwdInput" inputmode="numeric" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')checkPwd()">
+        ${pwdErr?`<p style="color:var(--red);font-weight:700;margin:4px 0 8px">${pwdErr}</p>`:'<div style="height:12px"></div>'}
+        <div class="btns" style="justify-content:center">
+          <button onclick="closePwd()">取消</button>
+          <button class="on" onclick="checkPwd()">確認進入</button>
+        </div>
+      </div>
+    </div>`:'';
+
+  app.innerHTML=`
+    <div class="land">
+      <div class="cloud-banner">
+        <h1 class="serif">多采的文化饗宴</h1>
+      </div>
+      <div class="btns" style="gap:16px;justify-content:center">
+        <button class="big on" onclick="openTeacher()">👩‍🏫 老師／電子白板</button>
+        <button class="big" onclick="location.hash='student'">🧒 學生（平板）</button>
+      </div>
+      <p class="hint" style="margin-top:20px">${useCloud?'🟢 雲端即時同步已連線（全班平板可同步）':'🟡 連線異常，目前為單機模式'}</p>
+    </div>${modal}`;
+}
+window.addEventListener('hashchange',render);
+
+/* ---------- board (whiteboard) ---------- */
+function board(){
+  const ph=S.phase;
+  const ctl=`<div class="btns">
+    ${[1,2,3].map(p=>`<button class="${ph===p?'on':''}" onclick="setS({phase:${p}})">${['① 聯想','② 分類','③ 文字雲'][p-1]}</button>`).join('')}
+    ${ph===1?TOPICS.map((t,i)=>`<button class="${S.topic===i?'on':''}" onclick="setS({topic:${i}})">出題：${t}</button>`).join('')+`<button class="on" style="background:var(--c${Math.min(S.topic+1,2)});border-color:var(--c${Math.min(S.topic+1,2)})" onclick="nextQ()">${S.topic<2?'下一題 ▶ '+TOPICS[S.topic+1]:'進入分類 ▶'}</button>`:''}
+    <button class="danger" id="clr" onclick="clearAll()">清空資料</button>
+  </div>`;
+
+  let body='';
+  if(ph===1){
+    body=`<div class="cols">${TOPICS.map((t,i)=>`<section class="col ${S.topic===i?'live':''}" style="--c:var(--c${i})"><h2 class="serif">${t}${S.topic===i?' ✎':''}</h2><div class="chips">${words.filter(w=>w.topic===i).map(w=>`<span class="chip" style="--c:var(--c${i})">${esc(w.text)}<small>${w.group}組</small><b onclick="delWord('${w.id}')">×</b></span>`).join('')}</div></section>`).join('')}</div>`;
+  }else if(ph===2){
+    body=`<div class="grid">${LETTERS.map(g=>{const t=GROUPS[g],c=cats[g]||{names:['',''],assign:{}},ws=words.filter(w=>w.topic===t),as=c.assign||{};
+      const sub=k=>`<div class="sub"><h4>跟「${esc((c.names||[])[k]||'…')}」有關</h4><div class="chips">${ws.filter(w=>as[w.id]===k).map(w=>`<span class="chip" style="--c:var(--c${t});font-size:1rem">${esc(w.text)}</span>`).join('')}</div></div>`;
+      return `<div class="card" style="--c:var(--c${t})"><h3>${g}組 · ${TOPICS[t]} <small class="hint">未分類 ${ws.filter(w=>as[w.id]===undefined).length}</small></h3><div class="two">${sub(0)}${sub(1)}</div></div>`}).join('')}</div>`;
+  }else{
+    body=`<div class="cols">${TOPICS.map((t,i)=>{const m={};LETTERS.filter(g=>GROUPS[g]===i).forEach(g=>((cats[g]||{}).names||[]).forEach(n=>{n=(n||'').trim();if(n)m[n]=(m[n]||0)+1}));
+      const es=Object.entries(m),mx=Math.max(1,...es.map(e=>e[1]));
+      return `<section class="col" style="--c:var(--c${i})"><h2 class="serif">${t}</h2><div class="cloud">${es.length?es.map(([n,c],j)=>`<span class="serif" style="font-size:${(2.1+(c/mx)*2.2+(j%3)*.25).toFixed(2)}rem;opacity:${(.7+.3*c/mx).toFixed(2)}">${esc(n)}</span>`).join(''):'<span class="hint" style="font-size:1.2rem">尚無分類</span>'}</div></section>`}).join('')}</div>`;
+  }
+  return `<div class="bar">
+    <div class="btns">
+      <button class="home-btn" onclick="goHome()">🏠 首頁</button>
+      <h1 class="title serif">多采的文化饗宴</h1>
+    </div>
+    ${ctl}
+  </div>${body}`;
+}
+
+/* ---------- student ---------- */
+function student(){
+  if(!group)return `
+    <div class="bar">
+      <div class="btns">
+        <button class="home-btn" onclick="goHome()">🏠 首頁</button>
+        <h1 class="title serif">多采的文化饗宴</h1>
+      </div>
+    </div>
+    <div class="stu-panel" style="text-align:center;padding:36px 20px">
+      <h2 class="serif" style="color:var(--red);font-size:2rem;margin-bottom:20px">請選擇你們的組別</h2>
+      <div class="btns" style="justify-content:center;gap:14px">${LETTERS.map(g=>`<button class="big" onclick="pick('${g}')">${g}組</button>`).join('')}</div>
+    </div>`;
+
+  const t=GROUPS[group];
+  const head=`<div class="bar">
+    <div class="btns">
+      <button class="home-btn" onclick="goHome()">🏠 首頁</button>
+      <h1 class="title serif">${group}組${S.phase===1?'':` <small style="color:var(--c${t})">${TOPICS[t]}分類</small>`}</h1>
+    </div>
+    <div class="btns">
+      ${(goCat||(S.phase===1&&myQ>0))?'<button onclick="stuBack()">◀ 上一步</button>':''}
+      <button onclick="pick(null)">🔄 換組</button>
+    </div>
+  </div>`;
+
+  if(S.phase===1&&!goCat){
+    if(myQ>2)return `<div class="stu">${head}<div class="stu-panel" style="text-align:center;padding:32px">
+      <p style="font-size:1.6rem;font-weight:800;color:var(--c1)">✅ 你們都寫完了！請按下一頁，開始分類。</p>
+      <div class="btns" style="justify-content:center;gap:14px;margin-top:16px">
+        <button class="big" onclick="myQ=2;render()">◀ 回去補充</button>
+        <button class="big on" onclick="goCat=true;render()">下一頁：分類 ▶</button>
+      </div>
+    </div></div>`;
+
+    const mine=words.filter(w=>w.group===group&&w.topic===myQ);
+    return `<div class="stu">${head}<div class="stu-panel">
+      <h2 class="serif" style="color:var(--c${myQ});font-size:1.6rem;margin-bottom:14px">第 ${myQ+1}／3 題：想到「${TOPICS[myQ]}」，你會想到什麼？</h2>
+      <div class="row"><input type="text" id="w" maxlength="12" placeholder="輸入聯想詞（按 Enter 或點送出）" onkeydown="if(event.key==='Enter')addWord()"><button class="on" style="white-space:nowrap;padding:10px 22px;font-size:1.2rem" onclick="addWord()">送出</button></div>
+      <p class="hint" style="margin:8px 0">${esc(msg)}</p>
+      <div class="chips" style="min-height:48px;margin-top:8px">${mine.map(w=>`<span class="chip" style="--c:var(--c${myQ})">${esc(w.text)}</span>`).join('')}</div>
+      <div class="btns" style="margin-top:24px;justify-content:space-between">
+        <div>${myQ>0?'<button class="big" onclick="myQ--;render()">◀ 上一題</button>':''}</div>
+        <button class="big on" onclick="myQ++;render()">${myQ<2?'下一題 ▶':'完成 ✔'}</button>
+      </div>
+    </div></div>`;
+  }
+
+  if(S.phase===3)return `<div class="stu">${head}<div class="stu-panel" style="text-align:center;padding:48px 20px">
+    <p class="serif" style="font-size:1.8rem;color:var(--red)">👀 全班分類完成！請看講台電子白板</p>
+  </div></div>`;
+
+  const c=cats[group]||{names:['',''],assign:{}},ws=words.filter(w=>w.topic===t),as=c.assign||{},ns=c.names||['',''];
+  const chip=w=>`<span class="chip ${sel===w.id?'sel':''}" data-id="${w.id}" style="--c:var(--c${t})">${esc(w.text)}</span>`;
+  const col=k=>`<div><div class="namebox">跟<input type="text" maxlength="8" value="${esc(ns[k]||'')}" placeholder="寫分類名" oninput="setName(${k},this.value)">有關</div><div class="zone" data-zone="${k}" style="--c:var(--c${t})">${ws.filter(w=>as[w.id]===k).map(chip).join('')}</div></div>`;
+  return `<div class="stu">${head}<div class="stu-panel">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px">
+      <p class="hint" style="margin:0">拖曳詞語到下面兩邊（或先點詞語，再點要放的框）。操作手拖，大家一起討論！</p>
+      ${goCat?'<button onclick="goCat=false;myQ=2;render()">◀ 回去補充聯想詞</button>':''}
+    </div>
+    <div class="zone" data-zone="p" style="--c:var(--c${t});margin-bottom:14px">${ws.filter(w=>as[w.id]===undefined).map(chip).join('')||'<span class="hint">都分完了 🎉</span>'}</div>
+    <div class="two" style="gap:14px">${col(0)}${col(1)}</div>
+  </div></div>`;
+}
+
+/* ---------- actions ---------- */
+function nextQ(){S.topic<2?setS({topic:S.topic+1}):setS({phase:2})}
+function stuBack(){if(goCat){goCat=false;myQ=3}else if(S.phase===1&&myQ>0){myQ--}else{pick(null);return}render()}
+function goHome(){showPwdModal=false;location.hash='';render()}
+function pick(g){group=g;try{g?localStorage.setItem('cf_group',g):localStorage.removeItem('cf_group')}catch(e){}render()}
+
+async function setS(p){
+  S={...S,...p};render();
+  if(useCloud){try{await rtdb.ref('meta/state').set(S)}catch(e){}}
+  else{saveLocal()}
+}
+
+async function addWord(){
+  const el=document.getElementById('w'),v=(el.value||'').trim();
+  if(!v)return;
+  el.value='';
+  const item={topic:myQ,group,text:v,ts:Date.now()};
+  if(useCloud){
+    try{await rtdb.ref('words').push(item);msg=''}catch(e){msg='送出失敗，請檢查 Firebase 規則是否設為測試模式'}
+  }else{
+    words.push({id:'w_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),...item});
+    saveLocal();render();
+  }
+}
+
+async function delWord(id){
+  if(useCloud){try{await rtdb.ref('words/'+id).remove()}catch(e){}}
+  else{words=words.filter(w=>w.id!==id);saveLocal();render()}
+}
+
+async function saveCat(patch){
+  const cur=cats[group]||{group,topic:GROUPS[group],names:['',''],assign:{}};
+  cats[group]={...cur,...patch};render();
+  if(useCloud){try{await rtdb.ref('cats/'+group).set(cats[group])}catch(e){}}
+  else{saveLocal()}
+}
+
+function move(id,z){
+  const c=cats[group]||{names:['',''],assign:{}},a={...(c.assign||{})};
+  if(z==='p')delete a[id];else a[id]=+z;
+  sel=null;saveCat({assign:a});
+}
+
+let nt;
+function setName(k,v){
+  const c=cats[group]||{names:['',''],assign:{}},n=[...(c.names||['',''])];
+  n[k]=v;
+  cats[group]={...(cats[group]||{group,topic:GROUPS[group],assign:{}}),names:n};
+  clearTimeout(nt);
+  nt=setTimeout(()=>{
+    if(useCloud)rtdb.ref('cats/'+group).set(cats[group]).catch(()=>{});
+    else saveLocal();
+  },400);
+}
+
+let armed=false;
+async function clearAll(){
+  const b=document.getElementById('clr');
+  if(!armed){armed=true;b.textContent='再按一次確認清空';setTimeout(()=>{armed=false;render()},3000);return}
+  armed=false;
+  if(useCloud){
+    await rtdb.ref('words').remove().catch(()=>{});
+    await rtdb.ref('cats').remove().catch(()=>{});
+  }else{
+    words=[];cats={};saveLocal();
+  }
+  setS({phase:1,topic:0});
+}
+
+/* ---------- drag & tap ---------- */
+let dr=null;
+document.addEventListener('pointerdown',e=>{
+  const ch=e.target.closest('.stu .chip[data-id]');if(!ch)return;
+  dr={id:ch.dataset.id,x:e.clientX,y:e.clientY,el:ch,ghost:null};
+});
+document.addEventListener('pointermove',e=>{
+  if(!dr)return;
+  if(!dr.ghost&&Math.hypot(e.clientX-dr.x,e.clientY-dr.y)>8){dragging=true;dr.ghost=dr.el.cloneNode(true);dr.ghost.className='chip ghost';dr.ghost.style.setProperty('--c',getComputedStyle(dr.el).getPropertyValue('--c'));document.body.appendChild(dr.ghost);dr.el.style.opacity=.3}
+  if(dr.ghost){dr.ghost.style.left=e.clientX+'px';dr.ghost.style.top=e.clientY+'px';
+    document.querySelectorAll('.zone.over').forEach(z=>z.classList.remove('over'));
+    const z=document.elementFromPoint(e.clientX,e.clientY)?.closest('.zone');if(z)z.classList.add('over')}
+});
+document.addEventListener('pointerup',e=>{
+  if(!dr)return;const d=dr;dr=null;
+  if(d.ghost){const z=document.elementFromPoint(e.clientX,e.clientY)?.closest('.zone');d.ghost.remove();dragging=false;
+    if(z)move(d.id,z.dataset.zone);else render();}
+  else{sel=sel===d.id?null:d.id;render()}
+});
+document.addEventListener('click',e=>{
+  const z=e.target.closest('.stu .zone');
+  if(z&&sel&&!e.target.closest('.chip'))move(sel,z.dataset.zone);
+});
+
+/* ---------- live data ---------- */
+if(useCloud){
+  rtdb.ref('meta/state').on('value',snap=>{if(snap.exists())S={phase:1,topic:0,...snap.val()};render()});
+  rtdb.ref('words').on('value',snap=>{
+    const val=snap.val()||{};
+    words=Object.entries(val).map(([id,v])=>({id,...v})).sort((a,b)=>a.ts-b.ts);
+    render();
+  });
+  rtdb.ref('cats').on('value',snap=>{if(dragging)return;cats=snap.val()||{};render()});
+}else{
+  loadLocal();
+  window.addEventListener('storage',()=>{loadLocal();render()});
+}
+render();
+</script>
+</body>
+</html>
